@@ -12,16 +12,20 @@ dataset = load_dataset('snli')
 dataset = dataset.filter(lambda example: example['label'] == 0)  # label 0 usually stands for entailment in SNLI dataset
 
 # Preprocess the dataset for T5
-def preprocess(example):
+def preprocess(examples):
     # T5 expects the task to be in the input so prepend 'entailment:' to the hypothesis
-    print(f"Type of premise: {type(example['premise'])}")
-    print(f"Type of hypothesis: {type(example['hypothesis'])}")
-    src_text = 'entailment: ' + example['hypothesis']
-    tgt_text = example['premise']
+    src_texts = ['entailment: ' + hypothesis for hypothesis in examples['hypothesis']]
+    tgt_texts = examples['premise']
+
+    input_encodings = tokenizer(src_texts, truncation=True, max_length=512)
+    target_encodings = tokenizer(tgt_texts, truncation=True, max_length=512)
+
     return {
-        'input_ids': tokenizer.encode(src_text, truncation=True, max_length=512),
-        'labels': tokenizer.encode(tgt_text, truncation=True, max_length=512),
+        'input_ids': input_encodings['input_ids'],
+        'attention_mask': input_encodings['attention_mask'],
+        'labels': target_encodings['input_ids'],
     }
+
 
 # Map the preprocess function to all examples in the dataset
 dataset = dataset.map(preprocess, batched=True)

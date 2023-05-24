@@ -14,6 +14,8 @@ dataset = dataset.filter(lambda example: example['label'] == 0)  # label 0 usual
 # Preprocess the dataset for T5
 def preprocess(example):
     # T5 expects the task to be in the input so prepend 'entailment:' to the hypothesis
+    print(f"Type of premise: {type(example['premise'])}")
+    print(f"Type of hypothesis: {type(example['hypothesis'])}")
     src_text = 'entailment: ' + example['hypothesis']
     tgt_text = example['premise']
     return {

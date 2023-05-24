@@ -1,6 +1,9 @@
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 from datasets import load_dataset
 
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3,4,5,6"
+
 # Load the tokenizer and model
 tokenizer = T5Tokenizer.from_pretrained('t5-large')
 model = T5ForConditionalGeneration.from_pretrained('t5-large')
@@ -17,8 +20,8 @@ def preprocess(examples):
     src_texts = ['entailment: ' + hypothesis for hypothesis in examples['hypothesis']]
     tgt_texts = examples['premise']
 
-    input_encodings = tokenizer(src_texts, truncation=True, padding="max_length", max_length=512)
-    target_encodings = tokenizer(tgt_texts, truncation=True, padding="max_length", max_length=512)
+    input_encodings = tokenizer(src_texts, truncation=True, padding="max_length", max_length=300)
+    target_encodings = tokenizer(tgt_texts, truncation=True, padding="max_length", max_length=300)
 
     return {
         'input_ids': input_encodings['input_ids'],

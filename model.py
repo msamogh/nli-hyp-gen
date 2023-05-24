@@ -17,8 +17,8 @@ def preprocess(examples):
     src_texts = ['entailment: ' + hypothesis for hypothesis in examples['hypothesis']]
     tgt_texts = examples['premise']
 
-    input_encodings = tokenizer(src_texts, truncation=True, max_length=512)
-    target_encodings = tokenizer(tgt_texts, truncation=True, max_length=512)
+    input_encodings = tokenizer(src_texts, truncation=True, padding=True, max_length=512)
+    target_encodings = tokenizer(tgt_texts, truncation=True, padding=True, max_length=512)
 
     return {
         'input_ids': input_encodings['input_ids'],
